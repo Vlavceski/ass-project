@@ -1,0 +1,58 @@
+.logo{
+    text-align: center;
+    padding: 2.6rem 1rem;
+    img{
+        width: 200px;
+    }
+}
+.mat-icon{
+    vertical-align: centar;
+    margin-right: 1rem;
+}
+.mat-divider{
+    border-top-width: 2px;
+    border-color: white;
+}
+.mat-list-item{
+    color:#5221e6 !important;
+    font-size: 0.0rem;
+    height: 44px !important;
+    margin-bottom: 4px;
+    
+    ::ng-deep{
+        .mat-list-item-content{
+            border-radius: 5px;
+            margin: 0 8px;
+            &:hover{
+                background: #001eff !important;
+        
+            }
+        }
+    }
+}
+
+
+.list-item-active{
+  
+    ::ng-deep{
+        .bck_color{
+            background: #1448a8;
+        }
+       
+    }
+}
+
+.mat-subheader{
+    color: #0033ff;
+    font-size: 0.6rem;
+    width: 100;
+    letter-spacing: 1px;
+}
+
+.bck_color{
+    background: #21aee6;
+    width: max-content;
+    border-radius: 150%;
+    padding: 2%;
+    color: #ffffff;
+}

@@ -1,0 +1,274 @@
+<div class="main-container">
+    <div class="first">
+        <div class="container">
+            <h1>Financial Overview</h1>
+            <mat-progress-bar mode="determinate" value="50"></mat-progress-bar>
+
+            <div>
+                <div class="overview-user" style="background-image: url('https://i.ibb.co/NV5YS7d/pngtree-brief-introduction-of-simple-small-fresh-watercolor-company-ppt-background-image-926616.jpg'); background-size: cover;
+                background-position: center;
+                padding: 10px;
+                margin: 10px;">
+                    <div class="overview-user-custom">
+                        <img src="https://i.ibb.co/PYRFd2y/3135715.png" alt="" class="user-image mr-1 p-2">
+                    </div>
+                    <div class="overview-user-custom">
+                        <h2>Current account</h2>
+                        <h4>1234-5678-9054-0222</h4>
+                    </div>
+                    <div class="overview-user-custom">
+                        <h2>$ 3500</h2>
+                        <h4>AVAILABLE BALANCE</h4>
+                    </div>
+                </div>
+                <div>
+                    <mat-tab-group animationDuration="0ms">
+                        <mat-tab label="EXECUTED">
+                            <div>
+                                <div class="choose">
+
+                                    <mat-tab-group>
+                                        <mat-tab>
+                                            <ng-template mat-tab-label>
+                                                <mat-icon>drag_indicator</mat-icon>
+                                            </ng-template>
+                                            <div>
+                                                <button type="button" class="btn btn-info" mdbRipple
+                                                    (click)="toggleCheckboxes()">
+                                                    {{ buttonText }}</button>
+                                                <button type="button" style="margin-left: 30px;" class="btn btn-info"
+                                                    mdbRipple *ngIf="showCheckboxes"
+                                                    (click)="onOkButtonClick()">Ok</button>
+
+                                                <button type="button" style="margin-left: 30px;" class="btn btn-primary"
+                                                    mdbRipple *ngIf="showCheckboxes"
+                                                    (click)="onCancelButtonClick()">Cancel</button>
+                                            </div>
+                                            <div>
+                                                <mat-list>
+                                                    <mat-card *ngFor="let item of paginatedData">
+                                                        <mat-card-content class="card">
+                                                            <div style="display: flex; padding:20px;">
+                                                                <div *ngIf="showCheckboxes">
+                                                                    <mat-checkbox [(ngModel)]="item.checked"
+                                                                        (change)="onCheckboxChange(item)"></mat-checkbox>
+                                                                </div>
+                                                                <div style="padding: 20px; margin: 20px;">
+                                                                    <h2>{{ item['beneficiary-name'] }}</h2>
+                                                                    <p>{{ item.date }}</p>
+                                                                    <button type="button" class="btn btn-info"
+                                                                        *ngIf="checkCategory(item)" mdbRipple
+                                                                        (click)="openDialogAddCategory(item)">
+                                                                        {{namecategory}}</button>
+                                                                    <button type="button" class="btn btn-info"
+                                                                        (click)="openDialogAddCategory(item)"
+                                                                        *ngIf="!checkCategory(item)" mdbRipple>
+                                                                        +Category</button>
+                                                                </div>
+
+                                                                
+                                                                <div
+                                                                    style="padding: 20px; margin: 20px; float: right;margin-left: auto;">
+                                                                    <h2>{{ item.amount }} {{ item.currency }}</h2>
+                                                                    <h4>{{ item.description }} <mat-icon>
+                                                                            location_on</mat-icon></h4>
+                                                                    <button type="button" class="btn btn-primary"
+                                                                        (click)="openDialog(item)" mdbRipple>Split
+                                                                        transaction</button>
+                                                                </div>
+                                                            </div>
+                                                        </mat-card-content>
+                                                    </mat-card>
+                                                    <mat-paginator [length]="data.items.length" [pageSize]="pageSize"
+                                                        [pageIndex]="currentPage" (page)="onPageChange($event)"
+                                                        showFirstLastButtons></mat-paginator>
+
+                                                </mat-list>
+
+
+
+                                            </div>
+
+                                        </mat-tab>
+                                        <mat-tab>
+                                            <ng-template mat-tab-label>
+                                                <mat-icon>widgets</mat-icon>
+                                            </ng-template>
+
+                                            <div id="chart">
+                                                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
+                                                    [dataLabels]="chartOptions.dataLabels"
+                                                    [plotOptions]="chartOptions.plotOptions"
+                                                    [title]="chartOptions.title"
+                                                    [legend]="chartOptions.legend"></apx-chart>
+                                            </div>
+
+                                        </mat-tab>
+                                        <mat-tab>
+                                            <ng-template mat-tab-label>
+                                                <mat-icon>video_label</mat-icon>
+                                            </ng-template>
+
+                                        </mat-tab>
+                                        <mat-tab>
+                                            <ng-template mat-tab-label>
+                                                <mat-icon>pie_chart</mat-icon>
+                                            </ng-template>
+                                            <div id="chart">
+                                                <apx-chart [series]="chartOptionsPie.series"
+                                                    [chart]="chartOptionsPie.chart" [labels]="chartOptionsPie.labels"
+                                                    [responsive]="chartOptionsPie.responsive"></apx-chart>
+                                            </div>
+                                        </mat-tab>
+                                        <mat-tab>
+                                            <ng-template mat-tab-label>
+                                                <mat-icon>adjust</mat-icon>
+                                            </ng-template>
+                                            <div id="chart">
+                                                <apx-chart [series]="chartOptionsBubble.series"
+                                                    [chart]="chartOptionsBubble.chart"
+                                                    [xaxis]="chartOptionsBubble.xaxis" [fill]="chartOptionsBubble.fill"
+                                                    [dataLabels]="chartOptionsBubble.dataLabels"
+                                                    [title]="chartOptionsBubble.title"
+                                                    [yaxis]="chartOptionsBubble.yaxis"></apx-chart>
+                                            </div>
+
+                                        </mat-tab>
+
+                                        <mat-tab>
+                                            <ng-template mat-tab-label>
+                                                <mat-icon>bar_chart</mat-icon>
+                                            </ng-template>
+                                            <div id="chart">
+                                                <apx-chart [series]="chartOptionsBar.series"
+                                                    [chart]="chartOptionsBar.chart"
+                                                    [dataLabels]="chartOptionsBar.dataLabels"
+                                                    [plotOptions]="chartOptions.plotOptions"
+                                                    [xaxis]="chartOptionsBar.xaxis"></apx-chart>
+                                            </div>
+
+                                        </mat-tab>
+
+                                    </mat-tab-group>
+
+
+
+                                </div>
+
+                            </div>
+                        </mat-tab>
+                        <mat-tab label="REJECTED">
+                            <button type="button" class="btn btn-info"
+                            (click)="SplitData()" mdbRipple>
+                            Split Data</button>
+
+                        </mat-tab>
+                        <mat-tab label="FUTURED">Content 3</mat-tab>
+                        <mat-tab label="DRAFT">Content 3</mat-tab>
+                        <mat-tab label="PANDING">Content 3</mat-tab>
+                    </mat-tab-group>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="second">
+        <mat-nav-list>
+            <a mat-list-item routerLink="/pfm/financial_overview" routerLinkActive="list-item-active" class="cc"
+                style=" background: rgb(61, 172, 241);;">
+                <mat-icon class="bck_color"> bar_chart</mat-icon>
+                Financial overview
+            </a>
+            <a mat-list-item routerLink="/pfm/financial_overview" routerLinkActive="list-item-active" class="cc">
+                <mat-icon class="bck_color">pie_chart</mat-icon>
+                Budgets
+            </a>
+            <a mat-list-item routerLink="/pfm/financial_overview" routerLinkActive="list-item-active" class="cc">
+                <mat-icon class="bck_color">tour</mat-icon>
+                Saving goals
+            </a>
+            <a mat-list-item routerLink="/pfm/financial_overview" routerLinkActive="list-item-active" class="cc">
+                <mat-icon class="bck_color">settings_applications</mat-icon>
+                Categorization rules
+            </a>
+        </mat-nav-list>
+        <div>
+            <h1>PERIOD:</h1>
+            <mat-progress-bar mode="determinate" value="69"></mat-progress-bar>
+        </div>
+        <div>
+            <h3>FROM:</h3>
+            <h3>TO:</h3>
+
+        </div>
+        <div>
+            <h1>TRANSACTION TYPE:</h1>
+            <mat-progress-bar mode="determinate" value="69"></mat-progress-bar>
+            <div ngbDropdown [autoClose]="'outside'">
+                <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle style="width: 100%;">
+                    Expenses
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 100%;">
+
+                </div>
+            </div>
+
+        </div>
+
+        <div>
+            <h1>FILTER BY ACCOUNT:</h1>
+            <mat-progress-bar mode="determinate" value="69"></mat-progress-bar>
+
+            <div ngbDropdown [autoClose]="'outside'">
+                <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle style="width: 100%;">
+                    All accounts
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="width: 100%;">
+                    <label ngbDropdownItem class="dropdown-item">
+                        <input type="checkbox" [(ngModel)]="actions.name" /> by Name
+                    </label>
+                    <!-- <label ngbDropdownItem class="dropdown-item">
+                        <input type="checkbox" [(ngModel)]="actions.date"  />
+                        by Date
+                    </label>
+                    <label ngbDropdownItem class="dropdown-item">
+                        <input type="checkbox" [(ngModel)]="actions.amount"  />
+                        by Amount
+                    </label> -->
+                </div>
+            </div>
+            <!-- <div ngbDropdown class="d-inline-block">
+                <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
+                    All accounts
+                </button>
+                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                    <button ngbDropdownItem (click)="filterByNameAscending()">by name</button>
+                    <button ngbDropdownItem (click)="resetFilter()">Reset</button>
+                </div>
+            </div> -->
+        </div>
+
+        <div>
+            <h1>BENEFICIARY:</h1>
+            <mat-progress-bar mode="determinate" value="69"></mat-progress-bar>
+            <form class="example-form">
+                <mat-form-field class="example-full-width" style="width: 100%;">
+                    <mat-label>Enter Beneficiary</mat-label>
+                    <input type="text" matInput placeholder="Beneficiary" [(ngModel)]="searchQuery"
+                        (keyup)="searchAndFilterData()">
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+            </form>
+        </div>
+        <div>
+            <button type="button" style="margin-left: 30px;" class="btn btn-primary"
+                (click)="filterByNameAscending()">Filter Transactions</button>
+            <button type="button" style="margin-left: 30px;" class="btn btn-basic clearselec" (click)="resetFilter()">
+                Clear Selections</button>
+        </div>
+
+    </div>
+
+
+
+</div>

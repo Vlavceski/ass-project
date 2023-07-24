@@ -1,0 +1,38 @@
+<div style="width: 600px;">
+    <h2 mat-dialog-title style="background: rgb(32, 175, 218);     display: flex;
+    justify-content: center;
+    align-items: center;">Choose category</h2>
+    <div mat-dialog-content style="display: grid;
+    justify-content: center;
+    align-items: center;">
+
+        <h2 style="display: flex;
+        justify-content: center;
+        align-items: center;">Current category: {{cat}}</h2>
+        <div *ngFor="let transaction of transactions; let i = index" style="margin: auto;">
+            <mat-form-field>
+                <mat-label>Category</mat-label>
+                <mat-select [(ngModel)]="transaction.category" (selectionChange)="updateSelectedOptionKey(transaction)">
+                    <mat-option *ngFor="let category of categories" [value]="category">{{ category }}</mat-option>
+                </mat-select>
+
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <mat-label>Subcategory</mat-label>
+                <mat-select [(ngModel)]="transaction.subcategory" [disabled]="!transaction.category"
+                    (selectionChange)="onSubcategorySelected($event)">
+                    <mat-option *ngFor="let subcategory of subcategories" [value]="subcategory">{{ subcategory
+                        }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <br>
+        </div>
+
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button class="btn btn-info" (click)="onCancelClick()">Cancel</button>
+        <button mat-button class="btn btn-primary" (click)="onOkClick()">OK</button>
+    </div>
+
+</div>

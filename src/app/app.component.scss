@@ -1,0 +1,105 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+mat-drawer {
+    width: 260px;
+    background: #ffffff;
+}
+
+mat-drawer-container {
+    height: 100%;
+}
+
+// @media screen and (max-width: 767px) {
+//     body {
+//         font-size: 14px;
+//         /* You can adjust the font size to be more readable on smaller screens */
+//     }
+
+//     .header {
+//         padding: 10px;
+//         background-color: #f0f0f0;
+//     }
+
+//     .menu {
+//         display: none;
+//         /* Hide the menu on mobile, you can use a hamburger menu icon here instead */
+//     }
+
+//     .content {
+//         padding: 10px;
+//     }
+
+//     .footer {
+//         position: fixed;
+//         bottom: 0;
+//         width: 100%;
+//         background-color: #f0f0f0;
+//         padding: 5px;
+//     }
+// }
+
+// @media screen and (min-width: 768px) and (max-width: 1023px) {
+//     body {
+//         font-size: 16px;
+//         /* Increase font size for better readability on tablets */
+//     }
+
+//     .header {
+//         padding: 20px;
+//         background-color: #ddd;
+//     }
+
+//     .menu {
+//         display: block;
+//         /* Show the menu as a vertical list on tablets */
+//         width: 200px;
+//         float: left;
+//     }
+
+//     .content {
+//         padding: 20px;
+//         margin-left: 210px;
+//         /* Create some space for the menu on the left */
+//     }
+
+//     .footer {
+//         position: static;
+//         /* Reset the position to static on tablets */
+//         background-color: #ddd;
+//         padding: 10px;
+//     }
+// }
+
+// @media screen and (min-width: 1024px) {
+//     body {
+//         font-size: 18px;
+//         /* Further increase font size for better readability on larger screens */
+//     }
+
+//     .header {
+//         padding: 30px;
+//         background-color: #ccc;
+//     }
+
+//     .menu {
+//         display: block;
+//         /* Show the menu as a vertical list on desktops as well */
+//         width: 250px;
+//         float: left;
+//     }
+
+//     .content {
+//         padding: 30px;
+//         margin-left: 260px;
+//         /* Create some space for the menu on the left */
+//     }
+
+//     .footer {
+//         background-color: #ccc;
+//         padding: 15px;
+//     }
+// }

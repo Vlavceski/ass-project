@@ -1,0 +1,121 @@
+.first {
+  width: 70%;
+  background: rgb(255, 255, 255);
+}
+
+
+.main-container {
+  display: flex;
+
+  background: rgb(255, 255, 255);
+}
+
+
+.list-item-active {
+
+  ::ng-deep {
+    background: rgb(122, 122, 239);
+
+  }
+}
+
+.cc {
+  background: rgb(213, 209, 209);
+  border-radius: 20px;
+  width: auto;
+  margin: 3px;
+  
+
+
+}
+
+.container {
+  padding: 30px;
+}
+
+.user-image {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+
+}
+
+.overview-user {
+  display: flex;
+  padding: 30px;
+}
+
+.overview-user-custom {
+  padding: 30px;
+}
+
+.choose {
+  display: flexbox;
+}
+
+
+.card {
+  border: 1px solid;
+  border-radius: 20px;
+}
+
+section {
+  display: table;
+}
+
+.example-label {
+  display: table-cell;
+  font-size: 14px;
+  margin-left: 8px;
+  min-width: 120px;
+}
+
+.example-button-row {
+  display: table-cell;
+  max-width: 600px;
+}
+
+.example-button-row .mat-mdc-button-base {
+  margin: 8px 8px 8px 0;
+}
+
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 120px;
+}
+
+.clearselec {
+  border: 1px solid;
+}
+
+
+#chart {
+  max-width: 650px;
+  margin: 35px auto;
+}
+
+.custom-expansion-panel .mat-expansion-panel-body {
+  max-height: 200px;
+  /* Set the desired height here */
+  overflow-y: auto;
+  /* Add vertical scrollbar if the content overflows */
+}
+
+ejs-schedule {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+
+
+
+
+
