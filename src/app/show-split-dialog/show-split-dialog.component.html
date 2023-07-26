@@ -1,0 +1,44 @@
+<div style="width: 600px;">
+    <h2 mat-dialog-title style="background: rgb(32, 175, 218);     display: flex;
+    justify-content: center;
+    align-items: center;">Split transaction</h2>
+    <div mat-dialog-content style="display: grid;
+    justify-content: center;
+    align-items: center;">
+
+        <mat-table [dataSource]="newdata">
+            <ng-container matColumnDef="id">
+                <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+                <mat-cell *matCellDef="let item">{{ item.id }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="beneficiary-name">
+                <mat-header-cell *matHeaderCellDef>Beneficiary Name</mat-header-cell>
+                <mat-cell *matCellDef="let item">{{ item['beneficiary-name'] }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="date">
+                <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                <mat-cell *matCellDef="let item">{{ item.date }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="codeCat">
+                <mat-header-cell *matHeaderCellDef>codeCat</mat-header-cell>
+                <mat-cell *matCellDef="let item">{{ item.codeCat }}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="amount">
+                <mat-header-cell *matHeaderCellDef>Amount</mat-header-cell>
+                <mat-cell *matCellDef="let item">{{ item.amount }}</mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columnsToDisplay;"></mat-row>
+        </mat-table>
+
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button class="btn btn-primary" (click)="onOkClick()">OK</button>
+    </div>
+
+</div>

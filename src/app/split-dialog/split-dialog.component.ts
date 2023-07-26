@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 import { TransactionService } from '../services/transaction.service'
 import { flush } from '@angular/core/testing';
 @Component({
@@ -21,10 +23,12 @@ export class SplitDialogComponent implements OnInit {
 
   public totalAmount!: number;
   public showAmount!: number;
+  transactionForm!: FormGroup;
   constructor(
     public dialogRef: MatDialogRef<SplitDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { item: any },
     private transactionService: TransactionService,
+    private formBuilder: FormBuilder
   ) {
     this.item = data.item;
     console.log(this.item)
@@ -32,6 +36,8 @@ export class SplitDialogComponent implements OnInit {
     this.numericValue = parseFloat(this.stringValue.split('€')[1].trim());
     this.totalAmount = this.numericValue;
     this.showAmount = this.numericValue;
+
+    
   }
 
 
@@ -43,6 +49,10 @@ export class SplitDialogComponent implements OnInit {
   ngOnInit(): void {
     this.loadCategories();
     this.addTransaction();
+    this.transactionForm = this.formBuilder.group({
+      category: ['', Validators.required], // Set the category control as required
+      transactions: this.formBuilder.array([]),
+    });
   }
 
   public dataCategory: any;
@@ -69,8 +79,8 @@ export class SplitDialogComponent implements OnInit {
     );
   }
   myMap = new Map();
-  category:any; 
-  updateCategory(cate:any){
+  category: any;
+  updateCategory(cate: any) {
     const searchString = cate
     var foundObject = this.dataCategory.find((item: any) => item.name === searchString);
     var foundObjects = this.dataSubCategory.filter((item: any) => item['parent-code'] === foundObject.code);
@@ -83,7 +93,7 @@ export class SplitDialogComponent implements OnInit {
 
   updateSelectedOptionKey(transaction: any, numTrans: any): void {
     const searchString = transaction.category;
-    
+
     var foundObject = this.dataCategory.find((item: any) => item.name === searchString);
     var foundObjects = this.dataSubCategory.filter((item: any) => item['parent-code'] === foundObject.code);
     const result = { "items": foundObjects };
@@ -97,7 +107,7 @@ export class SplitDialogComponent implements OnInit {
   }
   onSubcategorySelected(transaction: any, numTrans: any): void {
     var foundObject = this.dataCategory.find((item: any) => item.code === this.idCodeCategory);
-    
+
     // console.log(foundObject)
     var foundObjects = this.dataSubCategory.filter((item: any) => item.name === transaction.subcategory);
     const firstObject = foundObjects[0];
@@ -138,7 +148,10 @@ export class SplitDialogComponent implements OnInit {
     for (const transaction of this.transactions) {
       const transactionInput = parseFloat(transaction.input);
       console.log("Transaction input:", transactionInput);
-
+      if (transactionInput == 0 || Number.isNaN(transactionInput)) {
+        console.log("Error: Transaction input must be greater than 0.");
+        return; 
+      }
       if (transactionInput > 0) {
         total = this.subtractPrecisely(total, transactionInput);
         console.log("Updated total:", total);
@@ -150,6 +163,7 @@ export class SplitDialogComponent implements OnInit {
           } else {
             console.log("Remaining amount after transaction:", total.toFixed(2));
           }
+
         } else {
           console.log("Error: Not enough funds for the transaction.");
         }
@@ -158,13 +172,14 @@ export class SplitDialogComponent implements OnInit {
     console.log("map: " + this.myMap)
     if (tran) {
       let i = 0;
-      console.log("map: "+this.myMap)
+      console.log("map: " + this.myMap)
+      this.transactionService.clearSplitData('splitData');
       for (const transaction of this.transactions) {
         const transactionInput = parseFloat(transaction.input);
         // console.log("map: "+this.myMap)
         i++;
         const myObject = {
-          id: this.item.id * 100 + i,
+          id: this.item.id,
           'beneficiary-name': this.item["beneficiary-name"],
           date: this.item.date,
           direction: this.item.direction,
@@ -173,19 +188,19 @@ export class SplitDialogComponent implements OnInit {
           currency: this.item.currency,
           mcc: this.item.mcc,
           kind: this.item.kind,
-          codeCat: this.myMap.get(i-1),
+          codeCat: this.myMap.get(i - 1),
         };
 
         console.log(myObject);
-        
+
         const existingData = this.transactionService.getMultipleData('splitData');
-        
-          existingData.push(myObject);
-        
+
+        existingData.push(myObject);
+
         this.transactionService.setMultipleData('splitData', existingData);
         // this.dataArray = existingData;
         this.dialogRef.close();
-        
+
       }
     }
 

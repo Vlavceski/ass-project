@@ -1,18 +1,12 @@
 <div style="width: 600px;">
-  <h2 mat-dialog-title style="background: rgb(32, 175, 218);    display: flex;
-  justify-content: center;
-  align-items: center;">Split Transactions</h2>
-  <div mat-dialog-content style="height: auto;
-  justify-content: center;
-  align-content: center;
-  display: grid;">
-  <br>
+  <h2 mat-dialog-title style="background: rgb(32, 175, 218); display: flex; justify-content: center; align-items: center;">Split Transactions</h2>
+  <div mat-dialog-content>
+    <br>
     <mat-form-field>
       <mat-label>Category</mat-label>
-      <mat-select [(ngModel)]="category" (selectionChange)="updateCategory(category)">
-        <mat-option *ngFor="let category of categories" [value]="category">{{ category }}</mat-option>
+      <mat-select [(ngModel)]="category" (selectionChange)="updateCategory(category)" required>
+        <mat-option *ngFor="let category of categories" [value]="category" required>{{ category }}</mat-option>
       </mat-select>
-
     </mat-form-field>
 
     <div *ngFor="let transaction of transactions; let i = index" style="margin: auto;">
@@ -20,21 +14,22 @@
       <br>
       <mat-form-field>
         <mat-label>Subcategory</mat-label>
-        <mat-select [(ngModel)]="transaction.subcategory" [disabled]="!category"
-          (selectionChange)="onSubcategorySelected(transaction,i)">
-          <mat-option *ngFor="let subcategory of subcategories" [value]="subcategory">{{ subcategory }}</mat-option>
+        <mat-select [(ngModel)]="transaction.subcategory" [disabled]="!category" (selectionChange)="onSubcategorySelected(transaction, i)" required>
+          <mat-option *ngFor="let subcategory of subcategories" [value]="subcategory" required>{{ subcategory }}</mat-option>
         </mat-select>
       </mat-form-field>
       <br>
       <mat-form-field>
-        <input matInput placeholder="Input {{ i + 1 }}" [(ngModel)]="transaction.input">
+        <!-- Use type="number" and pattern="\d*" to accept only numeric values -->
+        <input matInput type="number" step="0.01" placeholder="Input {{ i + 1 }}" [(ngModel)]="transaction.input" required>
+     
       </mat-form-field>
       <br>
     </div>
 
-    <button mat-button class="btn btn-info" (click)="addTransaction()">Add Transaction</button>
-    <div style="color: red;" *ngIf="totalAmount > 0">Enter valid values</div>
-    <p>Total: </p>
+    <button mat-button class="btn btn-primary" (click)="addTransaction()">Add Transaction</button>
+    <div style="color: red;" >Enter valid values</div>
+    <p>Total: {{totalAmount}}</p>
   </div>
   <div mat-dialog-actions align="end">
     <button mat-button class="btn btn-info" (click)="onCancelClick()">Cancel</button>

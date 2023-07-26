@@ -1,0 +1,78 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+    <mat-toolbar><div class="logo">
+      <a href="https://imgbb.com/" routerLink="/home" routerLinkActive="list-item-active"><img src="https://i.ibb.co/4R6qPX8/logo-bank.png" alt="logo-bank" ></a>
+  </div>
+</mat-toolbar>
+    <mat-nav-list>
+      <br><br><br><br>
+      <a mat-list-item routerLink="/home" routerLinkActive="list-item-active">
+        <mat-icon  class="bck_color"> home</mat-icon>
+        HOME
+    </a>
+    <a mat-list-item routerLink="/my_accounts" routerLinkActive="list-item-active">
+        <mat-icon  class="bck_color">account_box</mat-icon>
+        MY ACCOUNTS
+    </a>
+    <a mat-list-item routerLink="/payments" routerLinkActive="list-item-active">
+        <mat-icon  class="bck_color">account_balance_wallet</mat-icon>
+        PAYMENTS
+    </a>
+    <a mat-list-item routerLink="/cards" routerLinkActive="list-item-active">
+        <mat-icon  class="bck_color"> credit_card</mat-icon>
+        CARDS
+    </a>
+    <a mat-list-item routerLink="/currency_exchange" routerLinkActive="list-item-active">
+        <mat-icon  class="bck_color"> swap_vert</mat-icon>
+        CURRENCY EXCHANGE
+    </a>
+    <a mat-list-item routerLink="/product_catalogue" routerLinkActive="list-item-active">
+        <mat-icon  class="bck_color"> image_search</mat-icon>
+        PRODUCT CATALOGUE
+    </a>
+    <a mat-list-item routerLink="/pfm" routerLinkActive="list-item-active">
+        <mat-icon  class="bck_color"> query_stats</mat-icon>
+        PFM
+    </a>
+    <a mat-list-item routerLink="/self_care" routerLinkActive="list-item-active">
+        <mat-icon  class="bck_color"> settings</mat-icon>
+        SELF CARE
+    </a>
+    <a mat-list-item routerLink="/support" routerLinkActive="list-item-active">
+        <mat-icon  class="bck_color"> support_agent</mat-icon>
+        SUPPORT
+    </a>
+    </mat-nav-list>
+    
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar >
+      
+      <mat-toolbar-row>
+        <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+        <h1 style="justify-content: center;margin-top: auto; color: white; ">PFM</h1>
+      
+      <div class="right-button-container">
+        <button class="user align-item-center">
+          <img src="https://i.ibb.co/PYRFd2y/3135715.png" alt="" class="user-image mr-3 p-6">
+            <div>
+            <h2 style="color: white;">Nikola</h2>
+            <sub style="color: white;">12 new messages</sub>
+          </div>
+        </button>
+      </div>
+    </mat-toolbar-row>
+    </mat-toolbar>
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

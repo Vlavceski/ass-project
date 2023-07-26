@@ -10,17 +10,16 @@
         justify-content: center;
         align-items: center;">Current category: {{cat}}</h2>
         <div *ngFor="let transaction of transactions; let i = index" style="margin: auto;">
-            <mat-form-field>
+            <mat-form-field >
                 <mat-label>Category</mat-label>
-                <mat-select [(ngModel)]="transaction.category" (selectionChange)="updateSelectedOptionKey(transaction)">
+                <mat-select [(ngModel)]="transaction.category"  (selectionChange)="updateSelectedOptionKey(transaction)">
                     <mat-option *ngFor="let category of categories" [value]="category">{{ category }}</mat-option>
                 </mat-select>
-
             </mat-form-field>
             <br>
             <mat-form-field>
                 <mat-label>Subcategory</mat-label>
-                <mat-select [(ngModel)]="transaction.subcategory" [disabled]="!transaction.category"
+                <mat-select [(ngModel)]="transaction.subcategory" [disabled]=" !transaction.category" 
                     (selectionChange)="onSubcategorySelected($event)">
                     <mat-option *ngFor="let subcategory of subcategories" [value]="subcategory">{{ subcategory
                         }}</mat-option>

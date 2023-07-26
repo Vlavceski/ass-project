@@ -44,4 +44,8 @@ export class TransactionService {
     const dataArrayString = localStorage.getItem(key);
     return dataArrayString ? JSON.parse(dataArrayString) : [];
   }
+  
+  public clearSplitData(key:string): void {
+    localStorage.removeItem(key);
+  }
 }

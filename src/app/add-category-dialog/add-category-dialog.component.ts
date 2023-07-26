@@ -26,18 +26,32 @@ export class AddCategoryDialogComponent implements OnInit {
   ) {
     this.TcodeCategory=data.code;
     this.items = data.items;
-console.log("data")
-console.log(this.items)
+    console.log(data.items)
     this.idTransaction = this.items.id
-
     this.stringValue = this.items.amount;
     this.numericValue = parseFloat(this.stringValue.split('€')[1].trim());
-
-    console.log(this.numericValue)
+    const view=this.transactionService.getMultipleData('dataCategory');
+    // console.log(view)
   }
 
   ngOnInit(): void {
     this.loadCategories();
+    this.checkCate()
+  }
+  obCat:any
+  checkCate(){
+    console.log("checkcat")
+    const viewData=this.transactionService.getMultipleData('dataCategory');
+    const itemsWithEmptyParent = viewData.filter((item: any) => item.idTransaction === this.data.items.id);
+    const result = { "items": itemsWithEmptyParent };
+    console.log(result.items[0].objCat)
+    if(result.items[0].objCat.category){
+      this.obCat=result.items[0].objCat
+      console.log("this.obCat")
+      console.log(this.obCat)
+    }
+
+    
   }
   //categories
   public transactions: { category: string, subcategory: string, input: string }[] = [{ category: '', subcategory: '', input: '' }];
@@ -48,20 +62,21 @@ console.log(this.items)
   public dataSubCategory: any;
   idCodeCategory!: number;
   idCodesubcategory!: number;
-cat:any
+  cat:any
   loadCategories() {
 
     this.transactionService.getDataCategories().subscribe(
       (data) => {
-       
+        // console.log("T:"+this.items);
         this.datacategories = data;
-        if(this.TcodeCategory){
-          const pattern = /^[A-Z0-9]+$/;
-          if(pattern.test(this.TcodeCategory)){
-            var name=this.datacategories.items.find((item:any) => item.code === this.TcodeCategory).name
-            this.cat=name
-          }
-        }
+        
+        // if(this.TcodeCategory){
+        //   const pattern = /^[A-Z0-9]+$/;
+        //   if(pattern.test(this.TcodeCategory)){
+        //     var name=this.datacategories.items.find((item:any) => item.code === this.TcodeCategory)
+        //     console.log(name)
+        //   }
+        // }
         const itemsWithEmptyParent = this.datacategories.items.filter((item: any) => item['parent-code'] === '');
         const result = { "items": itemsWithEmptyParent };
         this.categories = result.items.map((item: any) => item.name);
@@ -75,6 +90,7 @@ cat:any
       }
     );
   }
+  objectTransaction:any;
   updateSelectedOptionKey(transaction: any): void {
     const searchString = transaction.category;
     var foundObject = this.dataCategory.find((item: any) => item.name === searchString);
@@ -83,12 +99,14 @@ cat:any
     this.subcategories = result.items.map((item: any) => item.name);
     this.idCodeCategory = foundObject.code
     this.nameCodeCategory = foundObject.name
+    this.objectTransaction=transaction
 
   }
+  objectCat:any
   onSubcategorySelected(transaction: any): void {
     var foundObject = this.dataSubCategory.find((item: any) => item.name === transaction.value);
     this.idCodesubcategory = foundObject.code
-
+    this.objectCat=this.objectTransaction
   }
 
 
@@ -101,12 +119,13 @@ cat:any
       s = this.idCodeCategory;
     }
     cP = this.nameCodeCategory;
-
+    console.log(this.objectCat)
     const newObject = {
       idTransaction: this.idTransaction,
       codecat: s,
       codeParent: cP,
-      amount: this.numericValue
+      amount: this.numericValue,
+      objCat:this.objectCat
     };
 
     const existingData = this.transactionService.getMultipleData('dataCategory');

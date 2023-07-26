@@ -44,8 +44,11 @@ import { NgxApexchartsModule } from 'ngx-apexcharts';
 
 import {CdkAccordionModule} from '@angular/cdk/accordion';
 import { MatExpansionModule } from '@angular/material/expansion';
-
-
+import { MainNavComponent } from './main-nav/main-nav.component';
+import { MatButtonModule } from '@angular/material/button';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { MatNativeDateModule } from '@angular/material/core';
+import { ShowSplitDialogComponent } from './show-split-dialog/show-split-dialog.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,7 +65,10 @@ import { MatExpansionModule } from '@angular/material/expansion';
     SupportComponent,
     SplitDialogComponent,
     MultiCateDialogComponent,
-    AddCategoryDialogComponent
+    AddCategoryDialogComponent,
+    MainNavComponent,
+    ShowSplitDialogComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -92,9 +98,10 @@ import { MatExpansionModule } from '@angular/material/expansion';
     NgxApexchartsModule,
     CdkAccordionModule,
     MatExpansionModule,
-    
+    MatButtonModule,
+    MatNativeDateModule
 
-  ],
+  ],schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent]
 })

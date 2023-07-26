@@ -7,6 +7,7 @@ import { SplitDialogComponent } from '../split-dialog/split-dialog.component';
 import { MultiCateDialogComponent } from '../multi-cate-dialog/multi-cate-dialog.component';
 import { AddCategoryDialogComponent } from '../add-category-dialog/add-category-dialog.component';
 import { ChartComponent } from "ng-apexcharts";
+import { NgbAlertModule, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 
 interface DataItem {
@@ -33,6 +34,7 @@ import {
   ApexNonAxisChartSeries,
   ApexResponsive,
 } from "ng-apexcharts";
+import { ShowSplitDialogComponent } from '../show-split-dialog/show-split-dialog.component';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -74,33 +76,36 @@ export type ChartOptionsPie = {
   styleUrls: ['./pfm.component.scss']
 })
 export class PfmComponent implements OnInit {
+  [x: string]: any;
+
   public data: any;
   public data2: any;
   public dataCategory: any;
   showCheckboxes = false;
+
   @ViewChild("chart") chart!: ChartComponent;
   public chartOptions: Partial<ChartOptions> | any;
-  public chartOptionsBubble: Partial<ChartOptions> | any;
-  public chartOptionsBar: Partial<ChartOptions> | any;
-  public chartOptionsPie: Partial<ChartOptions> | any;
+  public chartOptionsBubble: Partial<ChartOptionsBubble> | any;
+  public chartOptionsBar: Partial<ChartOptionsBar> | any;
+  public chartOptionsPie: Partial<ChartOptionsPie> | any;
 
   public date?: Date | null = new Date();
   public calendarDate = Date.now();
+  minDate: Date;
+  maxDate: Date;
+  modelfrom!: NgbDateStruct;
+  modelto!: NgbDateStruct;
+  splitData: any
+  columnsToDisplay: string[] = ['id', 'beneficiary-name', 'codeCat', 'date', 'amount'];
 
-  onToday() {
-    this.calendarDate = Date.now();
-  }
 
-  onCancel() {
-    this.date = null;
-  }
+
   constructor(
     private transactionService: TransactionService,
     private route: ActivatedRoute,
     public dialog: MatDialog
   ) {
     this.calculateTotalAmountByCodeParent()
-    console.log(this.result)
     this.chartOptions = {
       series: [
         {
@@ -112,7 +117,9 @@ export class PfmComponent implements OnInit {
       ],
 
       chart: {
-        height: 350,
+
+        width:400,
+        height: 200,
         type: "treemap"
       },
       title: {
@@ -129,17 +136,18 @@ export class PfmComponent implements OnInit {
         }
       ],
       chart: {
-        height: 350,
+        width:400,
+        height: 200,
         type: "bubble"
       },
       dataLabels: {
         enabled: false
       },
       fill: {
-        opacity: 0.8
+        opacity: 1
       },
       title: {
-        text: "Simple Bubble Chart"
+        text: "Bubble Chart"
       },
       xaxis: {
         tickAmount: 12,
@@ -160,7 +168,8 @@ export class PfmComponent implements OnInit {
       ],
       chart: {
         type: "bar",
-        height: 350
+        width:400,
+        height: 200,
       },
       plotOptions: {
         bar: {
@@ -174,18 +183,20 @@ export class PfmComponent implements OnInit {
     };
     this.chartOptionsPie = {
       series: [
-        {
-          data: this.result.map(item => ({
-            x: item.category,
-            y: item.amount
-          }))
-        }
+        this.result.map(item => (
+          item.amount
+        ))
       ],
       chart: {
-        width: 380,
+        width:400,
+        height: 200,
         type: "pie"
       },
-      labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+      labels: [
+        this.result.map(item => (
+          item.category
+        ))
+      ],
       responsive: [
         {
           breakpoint: 480,
@@ -201,27 +212,63 @@ export class PfmComponent implements OnInit {
       ]
     };
 
+    this.loadSplitTransactions()
+    const currentYear = new Date().getFullYear();
+    this.minDate = new Date(currentYear - 20, 0, 1);
+    this.maxDate = new Date(currentYear + 1, 11, 31);
+    // this.transactionService.clearAllData()
 
   }
-
 
   ngOnInit(): void {
     this.loadTransactions();
-    console.log(this.transactionService.getMultipleData('dataCategory'))
-    // this.transactionService.clearAllData();
-
-    // this.chart()
     this.calculateTotalAmountByCodeParent()
-
+    this.paginateData()
+  }
+  onToday() {
+    this.calendarDate = Date.now();
   }
 
-  openDialog(item: any): void {
+  onCancel() {
+    this.date = null;
+  }
 
-    const dialogRef = this.dialog.open(SplitDialogComponent, {
-      data: { item: item }
+  loadSplitTransactions() {
+    this.splitData = this.transactionService.getMultipleData('splitData');
+  }
+
+
+  upDown!: string
+
+
+  dateRange = {
+    start: null as Date | null,
+    end: null as Date | null,
+  };
+
+  filteredData: any[] = [];
+  applyDateFilter() {
+    this.filteredData = this.data.items.filter((item:any) => {
+      const itemDate = new Date(item.date);
+      const startDate = this.dateRange.start;
+      const endDate = this.dateRange.end;
+
+      if (startDate === null || endDate === null) {
+        return true;
+      }
+
+      // Set the time to midnight for proper date comparison
+      startDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+
+      return itemDate >= startDate && itemDate <= endDate;
     });
+    this.data.items=this.filteredData
 
+    this.paginateData();    
+    console.log(this.filteredData)
   }
+
 
   loadTransactions(): void {
 
@@ -232,7 +279,8 @@ export class PfmComponent implements OnInit {
 
     this.transactionService.getData().subscribe(
       (data) => {
-        this.data = data;
+        this.data2 = data;
+        this.data = this.data2
         console.log(this.data)
         this.paginateData();
       },
@@ -241,16 +289,22 @@ export class PfmComponent implements OnInit {
       }
     );
   }
+
   toggleCheckboxes() {
     this.showCheckboxes = !this.showCheckboxes;
     this.buttonText = this.buttonText === this.previousText ? this.newText : this.previousText;
 
   }
-
-
-
-
-
+  existSplit(items: any) {
+    const splitData = this.transactionService.getMultipleData('splitData')
+    const idArray = splitData.map(item => item.id);
+    for (let i = 0; i < idArray.length; i++) {
+      if (items.id == idArray[i]) {
+        return true
+      }
+    }
+    return false
+  }
   //checkbox
   selectedItems: any[] = [];
 
@@ -265,9 +319,7 @@ export class PfmComponent implements OnInit {
   }
 
   onOkButtonClick() {
-    console.log(this.selectedItems);
     if (this.selectedItems.length <= 0) {
-      console.log("empty")
       this.showCheckboxes = false
       for (const item of this.data.items) {
         item.checked = false;
@@ -294,8 +346,22 @@ export class PfmComponent implements OnInit {
     this.buttonText = this.buttonText === this.previousText ? this.newText : this.previousText;
   }
 
-  openDialogMultiCate(items: any[]): void {
 
+  //dialogs
+  showSplitDialog(item: any): void {
+
+    this.dialog.open(ShowSplitDialogComponent, {
+      data: { items: item }
+    });
+  }
+
+  openDialog(item: any): void {
+    this.dialog.open(SplitDialogComponent, {
+      data: { item: item }
+    });
+  }
+
+  openDialogMultiCate(items: any[]): void {
     const dialogRef = this.dialog.open(MultiCateDialogComponent, {
       data: { items: items }
     });
@@ -303,8 +369,6 @@ export class PfmComponent implements OnInit {
 
   openDialogAddCategory(items: any): void {
     const pro = this.transactionService.getMultipleData('dataCategory');
-    // console.log(items)
-    // console.log("pro")
     var codeItem;
     if (pro.length == 0) {
     } else {
@@ -315,13 +379,12 @@ export class PfmComponent implements OnInit {
       if (foundItem) {
         const foundObject = this.dataCategory.find((category: any) => category.code === foundItem.codecat);
 
-        // console.log(foundObject.code)
-        codeItem=foundObject.code
+        codeItem = foundObject.code
       }
 
     }
     const dialogRef = this.dialog.open(AddCategoryDialogComponent, {
-      data: { items: items,code:codeItem }
+      data: { items: items, code: codeItem }
     });
   }
 
@@ -338,17 +401,17 @@ export class PfmComponent implements OnInit {
 
   paginateData() {
     const startIndex = this.currentPage * this.pageSize;
-    this.paginatedData = this.data.items.slice(startIndex, startIndex + this.pageSize);
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData = this.data.items.slice(startIndex, endIndex);
   }
 
-  onPageChange(event: PageEvent) {
+  onPageChange(event: any) {
     this.currentPage = event.pageIndex;
     this.paginateData();
   }
 
   //category
   namecategory!: string;
-
   checkCategory(item: any) {
 
 
@@ -362,10 +425,8 @@ export class PfmComponent implements OnInit {
       const foundItem = pro.find((proItem: any) => proItem.idTransaction === idTransactionsArray[i]);
 
       if (idTransactionsArray[i] == item.id) {
-        // console.log(foundItem.codecat)
         const foundObject = this.dataCategory.find((category: any) => category.code === foundItem.codecat);
 
-        // console.log(foundObject)
         if (foundObject) {
           this.namecategory = foundObject.name;
         }
@@ -385,32 +446,24 @@ export class PfmComponent implements OnInit {
     date: false,
     amount: false,
   };
-  applyFilters() {
-    // Apply the filters based on checkbox states
-    console.log("---------------------");
-    console.log(this.data);
-    var filteredData: any
-    if (this.actions.name) {
-      this.sortData()
-
-    }
-    // console.log(filteredData);
-    // this.currentPage = 0; 
-    // this.data.items = filteredData;
-    this.paginateData();
-  }
 
   ascendingOrder = true;
 
-  searchQuery!: string;
-
-  searchAndFilterData() {
-    const query = String(this.searchQuery).toLowerCase()
-
-    this.data.items = this.data.items.filter((item: any) => item['beneficiary-name'].toLowerCase().includes(query));
-
-    console.log(this.data.items);
-    this.paginateData()
+  searchAndFilterData(event: any) {
+    const inputElement = event.target as HTMLInputElement;
+    const searchText = inputElement.value.trim();
+    
+    var filteredData!:any[];
+    if (searchText)  {
+      filteredData = this.data2.items.filter((item: any) =>item['beneficiary-name'].toLowerCase().includes(searchText.toLowerCase()));
+      this.data.items = filteredData
+      this.paginateData()
+    }
+    if(searchText===''){
+      this.loadTransactions()
+    }
+   
+    this.paginateData();
   }
 
 
@@ -428,10 +481,15 @@ export class PfmComponent implements OnInit {
     }
     this.paginateData();
   }
+
   resetFilter() {
     this.ascendingOrder = true;
     this.actions = { name: false, date: false, amount: false };
     this.data.items.sort((a: any, b: any) => a.date.localeCompare(b.date));
+    this.dateRange.start = null;
+    this.dateRange.end = null;
+    this.filteredData = [];
+    this.loadTransactions();
     this.paginateData();
   }
 
@@ -461,35 +519,6 @@ export class PfmComponent implements OnInit {
     }));
   }
 
-
-
-
-  public generateData(count: number, yrange: { max: number; min: number; }) {
-    var i = 0;
-    var series = [];
-    while (i < count) {
-      var x = "w" + (i + 1).toString();
-      var y =
-        Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
-
-      series.push({
-        x: x,
-        y: y
-      });
-      i++;
-    }
-    return series;
-  }
-
-  //drop downs
-
-  onCheckboxChange2() {
-    // You can add any logic here if you need to respond to checkbox changes.
-  }
-
-  SplitData() {
-    console.log(this.transactionService.getMultipleData('splitData'))
-  }
 
 
 }

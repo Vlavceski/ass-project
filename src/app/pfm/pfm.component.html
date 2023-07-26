@@ -13,7 +13,7 @@
                         <img src="https://i.ibb.co/PYRFd2y/3135715.png" alt="" class="user-image mr-1 p-2">
                     </div>
                     <div class="overview-user-custom">
-                        <h2>Current account</h2>
+                        <h2>Nikola</h2>
                         <h4>1234-5678-9054-0222</h4>
                     </div>
                     <div class="overview-user-custom">
@@ -49,6 +49,12 @@
                                                     <mat-card *ngFor="let item of paginatedData">
                                                         <mat-card-content class="card">
                                                             <div style="display: flex; padding:20px;">
+                                                                <div>
+                                                                    <mat-icon *ngIf="item.direction === 'd'"
+                                                                        style="color:green;">expand_less</mat-icon>
+                                                                    <mat-icon *ngIf="item.direction === 'c'"
+                                                                        style="color: rgb(255, 0, 0);">expand_more</mat-icon>
+                                                                </div>
                                                                 <div *ngIf="showCheckboxes">
                                                                     <mat-checkbox [(ngModel)]="item.checked"
                                                                         (change)="onCheckboxChange(item)"></mat-checkbox>
@@ -66,15 +72,18 @@
                                                                         +Category</button>
                                                                 </div>
 
-                                                                
+
                                                                 <div
                                                                     style="padding: 20px; margin: 20px; float: right;margin-left: auto;">
                                                                     <h2>{{ item.amount }} {{ item.currency }}</h2>
-                                                                    <h4>{{ item.description }} <mat-icon>
-                                                                            location_on</mat-icon></h4>
+                                                                    <!-- <h4>{{ item.description }} <mat-icon>description</mat-icon></h4> -->
                                                                     <button type="button" class="btn btn-primary"
                                                                         (click)="openDialog(item)" mdbRipple>Split
                                                                         transaction</button>
+                                                                </div>
+                                                                <div>
+                                                                    <button *ngIf="existSplit(item)"mat-raised-button style="margin: auto;"
+                                                                        (click)="showSplitDialog(item)"><mat-icon>code</mat-icon></button>
                                                                 </div>
                                                             </div>
                                                         </mat-card-content>
@@ -85,8 +94,6 @@
 
                                                 </mat-list>
 
-
-
                                             </div>
 
                                         </mat-tab>
@@ -96,7 +103,9 @@
                                             </ng-template>
 
                                             <div id="chart">
-                                                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart"
+                                                <apx-chart  
+                                                    [series]="chartOptions.series"
+                                                    [chart]="chartOptions.chart" 
                                                     [dataLabels]="chartOptions.dataLabels"
                                                     [plotOptions]="chartOptions.plotOptions"
                                                     [title]="chartOptions.title"
@@ -115,7 +124,7 @@
                                                 <mat-icon>pie_chart</mat-icon>
                                             </ng-template>
                                             <div id="chart">
-                                                <apx-chart [series]="chartOptionsPie.series"
+                                                <apx-chart style="box-sizing: false;" [series]="chartOptionsPie.series"
                                                     [chart]="chartOptionsPie.chart" [labels]="chartOptionsPie.labels"
                                                     [responsive]="chartOptionsPie.responsive"></apx-chart>
                                             </div>
@@ -143,7 +152,7 @@
                                                 <apx-chart [series]="chartOptionsBar.series"
                                                     [chart]="chartOptionsBar.chart"
                                                     [dataLabels]="chartOptionsBar.dataLabels"
-                                                    [plotOptions]="chartOptions.plotOptions"
+                                                    [plotOptions]="chartOptionsBar.plotOptions"
                                                     [xaxis]="chartOptionsBar.xaxis"></apx-chart>
                                             </div>
 
@@ -158,9 +167,6 @@
                             </div>
                         </mat-tab>
                         <mat-tab label="REJECTED">
-                            <button type="button" class="btn btn-info"
-                            (click)="SplitData()" mdbRipple>
-                            Split Data</button>
 
                         </mat-tab>
                         <mat-tab label="FUTURED">Content 3</mat-tab>
@@ -196,15 +202,29 @@
             <h1>PERIOD:</h1>
             <mat-progress-bar mode="determinate" value="69"></mat-progress-bar>
         </div>
-        <div>
+        <div style="padding-top: 10px;">
             <h3>FROM:</h3>
-            <h3>TO:</h3>
+            <mat-form-field>
+                <mat-label>Select start date</mat-label>
+                <input matInput [matDatepicker]="fromDatepicker" [(ngModel)]="dateRange.start"
+                    (ngModelChange)="applyDateFilter()">
+                <mat-datepicker-toggle matSuffix [for]="fromDatepicker"></mat-datepicker-toggle>
+                <mat-datepicker #fromDatepicker></mat-datepicker>
+            </mat-form-field>
 
+            <h3>TO:</h3>
+            <mat-form-field>
+                <mat-label>Select end date</mat-label>
+                <input matInput [matDatepicker]="toDatepicker" [(ngModel)]="dateRange.end"
+                    (ngModelChange)="applyDateFilter()">
+                <mat-datepicker-toggle matSuffix [for]="toDatepicker"></mat-datepicker-toggle>
+                <mat-datepicker #toDatepicker></mat-datepicker>
+            </mat-form-field>
         </div>
         <div>
             <h1>TRANSACTION TYPE:</h1>
             <mat-progress-bar mode="determinate" value="69"></mat-progress-bar>
-            <div ngbDropdown [autoClose]="'outside'">
+            <div ngbDropdown [autoClose]="'outside'" style="padding-top: 10px;">
                 <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle style="width: 100%;">
                     Expenses
                 </button>
@@ -219,7 +239,7 @@
             <h1>FILTER BY ACCOUNT:</h1>
             <mat-progress-bar mode="determinate" value="69"></mat-progress-bar>
 
-            <div ngbDropdown [autoClose]="'outside'">
+            <div ngbDropdown [autoClose]="'outside'" style="padding-top: 10px;">
                 <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle style="width: 100%;">
                     All accounts
                 </button>
@@ -249,13 +269,13 @@
         </div>
 
         <div>
+            <!-- Question :Za search-->
             <h1>BENEFICIARY:</h1>
             <mat-progress-bar mode="determinate" value="69"></mat-progress-bar>
-            <form class="example-form">
+            <form class="example-form" style="padding-top: 10px;">
                 <mat-form-field class="example-full-width" style="width: 100%;">
                     <mat-label>Enter Beneficiary</mat-label>
-                    <input type="text" matInput placeholder="Beneficiary" [(ngModel)]="searchQuery"
-                        (keyup)="searchAndFilterData()">
+                    <input type="text" (input)="searchAndFilterData($event)" matInput placeholder="Beneficiary">
                     <mat-icon matSuffix>search</mat-icon>
                 </mat-form-field>
             </form>
@@ -263,6 +283,7 @@
         <div>
             <button type="button" style="margin-left: 30px;" class="btn btn-primary"
                 (click)="filterByNameAscending()">Filter Transactions</button>
+
             <button type="button" style="margin-left: 30px;" class="btn btn-basic clearselec" (click)="resetFilter()">
                 Clear Selections</button>
         </div>

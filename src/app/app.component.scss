@@ -1,17 +1,34 @@
-:host {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+// :host {
+//     display: flex;
+//     flex-direction: column;
+//     height: 100%;
+// }
+
+// mat-drawer {
+//     width: 260px;
+//     background: #ffffff;
+// }
+
+// mat-drawer-container {
+//     height: 100%;
+// }
+body{
+    margin: 0;
 }
 
-mat-drawer {
-    width: 260px;
-    background: #ffffff;
-}
-
-mat-drawer-container {
-    height: 100%;
-}
+// @media (max-width: 600px) {
+//     /* Mobile styles */
+//     .mat-drawer {
+//       width: 70%; /* Adjust the width to your preference */
+//     }
+//   }
+  
+//   @media (min-width: 601px) {
+//     /* Web styles */
+//     .mat-drawer {
+//       width: 20%; /* Adjust the width to your preference */
+//     }
+//   }
 
 // @media screen and (max-width: 767px) {
 //     body {
